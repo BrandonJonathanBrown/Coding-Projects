@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body
+{
+  background-color:rgb(165, 132, 106);
+}
+</style>
+<script>
+
+  function draw() {
+
+
+  const canvas = document.getElementById("canvas");
+  var img = document.getElementById("source");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  if (canvas.getContext) {
+    const ctx = canvas.getContext("2d");
+
+    var body = [];
+    var map = [];
+    var x = [];
+    var y = [];
+    let size = 25 * 2;
+    let score = 0;
+    let direction = 'r';
+    let randx = Math.floor(Math.random() * canvas.width / size) + 0;
+    let randy = Math.floor(Math.random() * canvas.height / size) + 0;
+
+
+    let KEY_CODE = {
+       LEFT: 37,
+       UP: 38,
+       RIGHT: 39,
+       DOWN: 40
+    };
+
+    let snake =
+    {
+      size: 3,
+      posX: 1,
+      posY: 1
+    };
+    let velocity =
+    {
+      x: size,
+      y: size
+    };
+
+    let Colors =
+    {
+      R: "red",
+      G: "green",
+      B: "blue",
+      Y: "yellow",
+      B: "black"
+    };
+
+    function Shape(x, y, w, h, fill) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.fill = fill;
+    }
+
+    window.addEventListener('keydown', function (event) {
+
+      if(event.keyCode == KEY_CODE.LEFT)
+      {
+          if(direction != 'r')
+            direction = 'l';
+      }
+      if(event.keyCode == KEY_CODE.RIGHT)
+      {
+          if(direction != 'l')
+            direction = 'r';
+      }
+      if(event.keyCode == KEY_CODE.DOWN)
+      {
+          if(direction != 'u')
+            direction = 'd';
+      }
+      if(event.keyCode == KEY_CODE.UP)
+      {
+          if(direction != 'd')
+            direction = 'u';
+      }
+
+    });
+
+    for(let i = 0; i < canvas.width; i += size)
+    {
+      for(let p = 0; p < canvas.height; p += size)
+      {
+          map.push(new Shape(i,p, size, size, Colors.B));
+      }
+    }
+
+
+    function GameMap()
+    {
+      for (var i in map) {
+          oRec = map[i];
+          ctx.fillStyle = oRec.fill;
+          ctx.fillRect(oRec.x, oRec.y, oRec.w, oRec.h);
+      }
+
+        ctx.drawImage(img,x[randx],y[randy],size,size);
+    }
+
+
+    for(let i = 0; i < canvas.width/size; i++)
+    {
+        x.push(velocity.x);
+        velocity.x += size;
+
+    }
+    for(let p = 0; p < canvas.height/size; p++)
+    {
+        y.push(velocity.y);
+        velocity.y += size;
+    }
+
+    for(let k = 0; k < snake.size; k++)
+    {
+      body.unshift(new Shape(x[k],y[snake.posY],size,size,Colors.Y));
+    }
+
+    function Motion()
+    {
+
+      for(let i = 0; i < snake.size - 1; i++)
+      {
+
+            oRec = body[i];
+            oPec = body[i + 1];
+            oRec.x = oPec.x;
+            oRec.y = oPec.y;
+            snake.posX = (oRec.x / size);
+            snake.posY = (oRec.y / size);
+
+            ctx.fillStyle = oRec.fill;
+            ctx.fillRect(x[snake.posX],y[snake.posY],oRec.w, oRec.h);
+
+            if(direction == 'r')
+              oPec.x += size;
+            if(direction == 'l')
+              oPec.x -= size;
+            if(direction == 'u')
+              oPec.y -= size;
+            if(direction == 'd')
+              oPec.y += size;
+
+            if(x[snake.posX] == x[randx] && y[snake.posY] == y[randy])
+            {
+                body.unshift(new Shape(x[randx],y[randy],size,size,Colors.Y));
+                snake.size++;
+                randx = Math.floor(Math.random() * canvas.width / size) + 0;
+                randy = Math.floor(Math.random() * canvas.height / size) + 0;
+                score += 112 * 7;
+            }
+
+            ctx.font = "50px Times New Roman";
+            ctx.fillStyle = "white";
+            ctx.fillText("Score: " + score,x[0],y[0]);
+
+          }
+
+      }
+
+    setInterval(() => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+        GameMap();
+        Motion();
+    }, 1000/6);
+}
+
+}
+</script>
+<meta charset=utf-8 />
+<title>Snake Game</title>
+</head>
+<body onload="draw()">
+<canvas id="canvas" width="100%" height="100%"></canvas>
+
+<div style="display:none;">
+  <img id="source" src="apple.jpg" width="25px" height="25px" />
+</div>
+</body>
+</html>
