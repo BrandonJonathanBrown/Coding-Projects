@@ -3,13 +3,20 @@ from tqdm import tqdm
 import requests
 import os
 
+# Author Brandon Jonathan Brown
+
 class YouTubeDownloader:
+
+    """ Constructor for YoutubeDownloader class """
+    
     def __init__(self, url):
         print("[*] Initializing YouTube Downloader...")
         self.url = url
         self.video_data = None
         self.get_video_info()
 
+    """ Function for retrieving video data from youtube sockets """
+    
     def get_video_info(self):
         try:
             youtube = YouTube(self.url)
@@ -25,6 +32,8 @@ class YouTubeDownloader:
             print(f"[!] Error retrieving video info: {ex}")
             self.video_data = None
 
+    """ Function for choosing the best resolution, proccessing the url from youtube, and lastly processing the file size """
+
     def get_streams_info(self, streams):
         stream_info = []
         for stream in streams:
@@ -38,6 +47,8 @@ class YouTubeDownloader:
                 print(f"[!] Error fetching stream details: {ex}")
         return stream_info
 
+    """ Function for downloading the video from youtube sockets """
+    
     def download(self):
         if not self.video_data:
             print("[!] No video data available to download.")
@@ -67,6 +78,8 @@ class YouTubeDownloader:
 
 
 if __name__ == "__main__":
+
+    """ Main function for input of youtube URL's and quit from application """
     urls = []
     while True:
         package = input("Please enter a URL or 'q' to quit: \n")
@@ -74,6 +87,8 @@ if __name__ == "__main__":
             break
         urls.append(package)
 
+    """ Loop through all the url's and download """
+    
     for url in urls:
         downloader = YouTubeDownloader(url=url)
         downloader.download()
