@@ -18,6 +18,8 @@ def download(self):
         try:
             print(f"[*] Fetching video info for: {self.url}")
 
+""" inner function hook """
+
             def hook(d):
                 if d['status'] == 'downloading':
                     pbar.total = d.get('total_bytes', 0) or d.get('total_bytes_estimate', 0)
